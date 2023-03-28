@@ -1,8 +1,8 @@
 int maxIter = 2;
 
-final float originX = -0.25f;
+final float originX = -0.2f;
 final float originY = -0.1f;
-final float radius = 1.5f;
+final float radius = 1.45f;
 
 final int choice = 4;
 
@@ -107,7 +107,7 @@ void settings() {
   size(512, 512);
   antiAliasing = false;
   if (rendering) {
-    size(4096, 4096);
+    size(4096 / 4, 4096 / 4);
     antiAliasing = true;
     maxIter = 512;
     samples = 4;
@@ -149,7 +149,7 @@ void setup() {
         println(i + "/" + (colorOptions.length - 1));
         colors = append(reverse(interpolateColors(sortColorsB(colorOptions[i]), 100000)), color(0, 0, 0));
         render(colors);
-        save("renders/" + choice + "/" + i + "_" + colorNames[i] + ".png");
+        save("renders/" + choice + "/1K/" + i + "_" + colorNames[i] + ".png");
       }
       exit();
     } else {
@@ -252,8 +252,8 @@ void calculate() {
         
         while (n < maxIter) {
           double[] num = function(a, b, new double[] {ca, cb});
-          a = num[0] + ca;
-          b = num[1] + cb;
+          a = num[0];
+          b = num[1];
 
           if (a * a + b * b > 4.0) {
             break;
@@ -275,8 +275,8 @@ void calculate() {
       float n = 1.0f;
       while (n < maxIter) {
         double[] num = function(a, b, new double[] {ca, cb});
-        a = num[0] + ca;
-        b = num[1] + cb;
+        a = num[0];
+        b = num[1];
 
         if (a * a + b * b > 4.0) {
           break;
@@ -320,26 +320,36 @@ double[] function(double a, double b, double[] c) {
     case(0):
       // Standard
       num = complexPow(num, n);
+      num[0] += c[0];
+      num[1] += c[1];
       break;
     case(1):
       // tricorn
       num = complexPow(new double[] {a, -b}, n);
+      num[0] += c[0];
+      num[1] += c[1];
       break;
     case(2):
       // Burning ship
       num[0] = Math.abs(a);
       num[1] = Math.abs(b);
       num = complexPow(num, n);
+      num[0] += c[0];
+      num[1] += c[1];
       break;
     case(3):
       // (a^2 + b) + i(b^2 + a^2 + b)
       num[0] = (num[0] * num[0] + num[1]);
       num[1] = (num[0] + num[1] * num[1]);
+      num[0] += c[0];
+      num[1] += c[1];
       break;
     case(4):
       // newtons method for f(x)=(z^2+1)
       num[1] = a * (a*a + b*b + 1) / (2 * (a*a + b*b));
       num[0] = -b * (-a*a - b + 1) / (2 * (a*a + b*b));
+      num[0] += c[0];
+      num[1] += c[1];
       break;
     case(5):
       // glynn
@@ -356,12 +366,8 @@ double[] function(double a, double b, double[] c) {
       
       num[0] = first[0] + second1c[0] * second2c[0];
       num[1] = first[1] + second1c[1] * second2c[1];
-      
-      break;
-    case(6):
-      // weird circle thing
-      num[0] = (a*a - b*b) / (a*a + b*b);
-      num[1] = (2*a*b) / (a*a + b*b);
+      num[0] += c[0];
+      num[1] += c[1];
       break;
   }
   return num;
