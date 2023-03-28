@@ -13,4 +13,4 @@ A horribly inefficient mandelbrot renderer made in Processing
   
   4: Newton's Method style equation ((z - (z^2 + 1) / (2 * z)))
   
-  5: Using Cosines and Sines (z^3 + c * (sin(z) + cos(z)) + c)
+  5: Using Cosines and Sines (z^3 + c * (sin(z) * cos(z + 1)))
