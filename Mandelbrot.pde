@@ -1,14 +1,15 @@
 int maxIter = 2;
 
-final float originX = 0f;
-final float originY = 0f;
-final float radius = 2f;
+final float originX = -0.45f;
+final float originY = -0.55f;
+final float radius = 1.5f;
 
-final int choice = 6;
+final int choice = 2;
 
 int samples;
 
 boolean rendering = true;
+int res = 2;
 boolean antiAliasing;
 
 color[] red = {
@@ -99,6 +100,40 @@ color[] bw = {
   color(255, 255, 255)
 };
 
+color[] l = {
+  color(213, 45, 0), 
+  color(239, 118, 39), 
+  color(255, 154, 86), 
+  color(255, 255, 255), 
+  color(209, 98, 164), 
+  color(181, 86, 144), 
+  color(163, 2, 98)
+};
+
+color[] g = {
+  color(7,141,112), 
+  color(152,232,193), 
+  color(255,255,255), 
+  color(123,173,226), 
+  color(61,26,120)
+};
+
+color[] b = {
+  color(214, 2, 112), 
+  color(155, 79, 150), 
+  color(0, 56, 168)
+};
+
+color[] t = {
+  color(91, 206, 250), 
+  color(245, 169, 184),
+  color(255, 255, 255),
+  color(255, 255, 255),
+  color(255, 255, 255), 
+  color(245, 169, 184), 
+  color(91, 206, 250)
+};
+
 color[] colors;
 
 float[][] mandelbrot;
@@ -107,7 +142,7 @@ void settings() {
   size(512, 512);
   antiAliasing = false;
   if (rendering) {
-    size(4096 / 1, 4096 / 1);
+    size((int)pow(2, (log(res)/log(2)) + 10), (int)pow(2, (log(res)/log(2)) + 10));
     antiAliasing = true;
     maxIter = 512;
     samples = 4;
@@ -116,15 +151,16 @@ void settings() {
 }
 
 void setup() {
-  color[][] colorOptions = {red, neonPallate(color(255, 0, 0)), 
-                            orange, neonPallate(color(255, 127, 0)), 
-                            yellow, neonPallate(color(255, 255, 0)), 
-                            green, neonPallate(color(0, 255, 0)), 
-                            cyan, neonPallate(color(0, 255, 255)), 
-                            blue, neonPallate(color(0, 0, 255)), 
-                            purple, neonPallate(color(255, 0, 255)), 
-                            pink, neonPallate(color(255, 0, 110)), 
-                            rainbow, pastel, bw};
+  color[][] colorOptions = {red, neonPallate(color(255, 0, 0)),           //0, 1
+                            orange, neonPallate(color(255, 127, 0)),      //2, 3
+                            yellow, neonPallate(color(255, 255, 0)),      //4, 5
+                            green, neonPallate(color(0, 255, 0)),         //6, 7
+                            cyan, neonPallate(color(0, 255, 255)),        //8, 9
+                            blue, neonPallate(color(0, 0, 255)),          //10, 11
+                            purple, neonPallate(color(255, 0, 255)),      //12, 13
+                            pink, neonPallate(color(255, 0, 110)),        //14, 15
+                            rainbow, pastel, bw,                          //16, 17, 18
+                            l, g, b, t};                                  //19, 20, 21, 22
   
   String[] colorNames = {"red", "neon_red", 
                          "orange", "neon_orange", 
@@ -134,29 +170,25 @@ void setup() {
                          "blue", "neon_blue", 
                          "purple", "neon_purple", 
                          "pink", "neon_pink", 
-                         "rainbow", "pastel", "bw"};
+                         "rainbow", "pastel", "bw",
+                         "l", "g", "b", "t"};
   
-  int selection = 8;
-  colors = append(reverse(interpolateColors(sortColorsB(colorOptions[selection]), 100000)), color(0, 0, 0));
+  int selection = 22;
+  if (18 < selection && selection < 23) {
+    colors = append(reverse(interpolateColors(colorOptions[selection], 100000)), color(0, 0, 0));
+  } else {
+    colors = append(reverse(interpolateColors(sortColorsB(colorOptions[selection]), 100000)), color(0, 0, 0));
+  }
   if (rendering) {
-    
-    boolean renderAll = true;
     calculate();
-    println(millis() / 1000.0f);
-    
-    if (renderAll) {
-      for (int i = 0; i < colorOptions.length; i++) {
-        println(i + "/" + (colorOptions.length - 1));
-        colors = append(reverse(interpolateColors(sortColorsB(colorOptions[i]), 100000)), color(0, 0, 0));
-        render(colors);
-        save("renders/" + choice + "/4K/" + i + "_" + colorNames[i] + ".png");
-      }
-      exit();
-    } else {
+    for (int i = 0; i < colorOptions.length; i++) {
+      println(i + "/" + (colorOptions.length - 1));
+      colors = append(reverse(interpolateColors(sortColorsB(colorOptions[i]), 100000)), color(0, 0, 0));
       render(colors);
-      save("renders/" + choice + "/hirez_" + colorNames[selection] + ".png");
-      exit();
+      save("renders/" + choice + "/" + res + "K/" + i + "_" + colorNames[i] + ".png");
     }
+    println(int(millis() / 1000.0f) / 60 + ":" + (millis() / 1000.0f) % 60);
+    exit();
   }
 }
 
@@ -224,7 +256,6 @@ void calculate() {
   double pixelH = radius / height;
   
   int sampleW = (int)sqrt(samples);
-  
   
   for (int i = 0; i < w * h; i++) {
     int x = i % w;
@@ -294,8 +325,7 @@ void render(color[] cols) {
   loadPixels();
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
-      
-      int colorIndex = (int)(mandelbrot[x][y] * mandelbrot[x][y] * colorsLen);
+      int colorIndex = (int)(pow(mandelbrot[x][y], 1.5f) * colorsLen);
       color col = colors[colorIndex];
       int index = (x + y * width);
       pixels[index] = col;
