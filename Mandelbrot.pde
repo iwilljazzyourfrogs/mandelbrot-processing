@@ -2,7 +2,7 @@ int maxIter = 2;
 
 final float originX = 0f;
 final float originY = 0f;
-final float radius = 1f;
+final float radius = 2f;
 
 final int choice = 6;
 
@@ -149,7 +149,7 @@ void setup() {
         println(i + "/" + (colorOptions.length - 1));
         colors = append(reverse(interpolateColors(sortColorsB(colorOptions[i]), 100000)), color(0, 0, 0));
         render(colors);
-        save("renders/" + choice + "/8K/" + i + "_" + colorNames[i] + ".png");
+        save("renders/" + choice + "/4K/" + i + "_" + colorNames[i] + ".png");
       }
       exit();
     } else {
