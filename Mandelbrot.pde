@@ -8,7 +8,8 @@ final int choice = 6;
 
 int samples;
 
-boolean rendering = true;
+boolean rendering = false;
+int res = 1;
 boolean antiAliasing;
 
 color[] red = {
@@ -99,6 +100,22 @@ color[] bw = {
   color(255, 255, 255)
 };
 
+color[] l = {
+
+};
+
+color[] g = {
+
+};
+
+color[] b = {
+
+};
+
+color[] t = {
+
+};
+
 color[] colors;
 
 float[][] mandelbrot;
@@ -106,8 +123,9 @@ float[][] mandelbrot;
 void settings() {
   size(512, 512);
   antiAliasing = false;
+  println((int)pow(2, (log(res)/log(2)) + 10));
   if (rendering) {
-    size(4096 / 1, 4096 / 1);
+    size((int)pow(2, (log(res)/log(2)) + 10), (int)pow(2, (log(res)/log(2)) + 10));
     antiAliasing = true;
     maxIter = 512;
     samples = 4;
@@ -124,7 +142,8 @@ void setup() {
                             blue, neonPallate(color(0, 0, 255)), 
                             purple, neonPallate(color(255, 0, 255)), 
                             pink, neonPallate(color(255, 0, 110)), 
-                            rainbow, pastel, bw};
+                            rainbow, pastel, bw, 
+                            l, g, b, t};
   
   String[] colorNames = {"red", "neon_red", 
                          "orange", "neon_orange", 
@@ -134,29 +153,21 @@ void setup() {
                          "blue", "neon_blue", 
                          "purple", "neon_purple", 
                          "pink", "neon_pink", 
-                         "rainbow", "pastel", "bw"};
+                         "rainbow", "pastel", "bw",
+                         "l", "g", "b", "t"};
   
   int selection = 8;
   colors = append(reverse(interpolateColors(sortColorsB(colorOptions[selection]), 100000)), color(0, 0, 0));
   if (rendering) {
-    
-    boolean renderAll = true;
     calculate();
-    println(millis() / 1000.0f);
-    
-    if (renderAll) {
-      for (int i = 0; i < colorOptions.length; i++) {
-        println(i + "/" + (colorOptions.length - 1));
-        colors = append(reverse(interpolateColors(sortColorsB(colorOptions[i]), 100000)), color(0, 0, 0));
-        render(colors);
-        save("renders/" + choice + "/4K/" + i + "_" + colorNames[i] + ".png");
-      }
-      exit();
-    } else {
+    println(int(millis() / 1000.0f) / 60 + ":" + (millis() / 1000.0f) % 60);
+    for (int i = 0; i < colorOptions.length; i++) {
+      println(i + "/" + (colorOptions.length - 1));
+      colors = append(reverse(interpolateColors(sortColorsB(colorOptions[i]), 100000)), color(0, 0, 0));
       render(colors);
-      save("renders/" + choice + "/hirez_" + colorNames[selection] + ".png");
-      exit();
+      save("renders/" + choice + "/" + res + "K/" + i + "_" + colorNames[i] + ".png");
     }
+    exit();
   }
 }
 
