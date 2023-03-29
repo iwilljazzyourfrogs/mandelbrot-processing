@@ -8,8 +8,8 @@ final int choice = 2;
 
 int samples;
 
-boolean rendering = true;
-int res = 2;
+boolean rendering = false;
+int res = 1;
 boolean antiAliasing;
 
 color[] red = {
@@ -141,6 +141,7 @@ float[][] mandelbrot;
 void settings() {
   size(512, 512);
   antiAliasing = false;
+  println((int)pow(2, (log(res)/log(2)) + 10));
   if (rendering) {
     size((int)pow(2, (log(res)/log(2)) + 10), (int)pow(2, (log(res)/log(2)) + 10));
     antiAliasing = true;
