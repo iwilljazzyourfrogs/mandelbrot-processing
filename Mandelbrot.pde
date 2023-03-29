@@ -1,10 +1,10 @@
 int maxIter = 2;
 
-final float originX = -0.2f;
-final float originY = -0.1f;
-final float radius = 1.45f;
+final float originX = 0f;
+final float originY = 0f;
+final float radius = 1f;
 
-final int choice = 4;
+final int choice = 6;
 
 int samples;
 
@@ -107,7 +107,7 @@ void settings() {
   size(512, 512);
   antiAliasing = false;
   if (rendering) {
-    size(4096 / 4, 4096 / 4);
+    size(4096 / 1, 4096 / 1);
     antiAliasing = true;
     maxIter = 512;
     samples = 4;
@@ -149,7 +149,7 @@ void setup() {
         println(i + "/" + (colorOptions.length - 1));
         colors = append(reverse(interpolateColors(sortColorsB(colorOptions[i]), 100000)), color(0, 0, 0));
         render(colors);
-        save("renders/" + choice + "/1K/" + i + "_" + colorNames[i] + ".png");
+        save("renders/" + choice + "/8K/" + i + "_" + colorNames[i] + ".png");
       }
       exit();
     } else {
@@ -312,10 +312,26 @@ double[] complexPow(double[] z, float n) {
   return new double[]{real, complex};
 }
 
+double[] complexPow2(double[] z, double[] w) {
+  float a = (float)z[0];
+  float b = (float)z[1];
+  float c = (float)w[0];
+  float d = (float)w[1];
+  double[] p1 = complexPow(z, c);
+  double r = sqrt(a * a + b * b);
+  float theta = atan2((float)b, (float)a);
+  if (theta < 0) {
+    theta += 2 * PI;
+  }
+  double[] p2 = new double[] {exp(-d * theta) * cos(d * log((float)r)), exp(-d * theta) * sin(d * log((float)r))};
+  return new double[] {p1[0] * p2[0] - p1[1] * p2[1], p1[0] * p2[1] + p1[1] * p2[0]};
+}
+
 double[] function(double a, double b, double[] c) {
   double[] num = new double[] {a, b};
 
   final int n = 2;
+  double[] temp;
   switch(choice) {
     case(0):
       // Standard
@@ -338,7 +354,7 @@ double[] function(double a, double b, double[] c) {
       num[1] += c[1];
       break;
     case(3):
-      // (a^2 + b) + i(b^2 + a^2 + b)
+      // (a^2 + b) + i(b^2 + a^2 + b) + c
       num[0] = (num[0] * num[0] + num[1]);
       num[1] = (num[0] + num[1] * num[1]);
       num[0] += c[0];
@@ -346,13 +362,14 @@ double[] function(double a, double b, double[] c) {
       break;
     case(4):
       // newtons method for f(x)=(z^2+1)
+      // (z - (z^2 + 1) / (2 * z))
       num[1] = a * (a*a + b*b + 1) / (2 * (a*a + b*b));
       num[0] = -b * (-a*a - b + 1) / (2 * (a*a + b*b));
       num[0] += c[0];
       num[1] += c[1];
       break;
     case(5):
-      // glynn
+      // z^3 + c(sin(z) * cos(z) + 1)
       double[] first = complexPow(num, 3);
       double[] second1 = new double[] {(float)Math.sin(a) * (float)Math.cosh(b), 
                                        (float)Math.cos(a) * (float)Math.sinh(b)};
@@ -369,6 +386,24 @@ double[] function(double a, double b, double[] c) {
       num[0] += c[0];
       num[1] += c[1];
       break;
+      
+     case(6):
+       temp = complexPow(complexPow2(c, num), n);
+       num[0] = a * a / temp[0];
+       num[1] = b * b / temp[1];
+       break;
+       
+     case(7):
+       double[] p = complexPow(new double[] {b, a}, n);
+       num[1] = p[0] + c[1] - (float)(exp((float)b) * cos((float)a));
+       num[0] = p[1] + c[0] - (float)(exp((float)b) * sin((float)a));
+       break;
+       
+     case(8):
+       temp = complexPow(num, n);
+       num[0] = temp[0] + (a * c[0] + a - b * c[1]) / ((c[0] + 1) * (c[0] + 1) + c[1] * c[1]);
+       num[1] = temp[1] + (b * c[0] + b + a * c[1]) / ((c[0] + 1) * (c[0] + 1) + c[1] * c[1]);
+       break;
   }
   return num;
 }
