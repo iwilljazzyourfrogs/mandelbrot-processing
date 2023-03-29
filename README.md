@@ -5,15 +5,15 @@ A horribly inefficient mandelbrot renderer made in Processing
 
 
 
-  0: Standard mandelbrot
+  0: Standard mandelbrot (z^2 + c)
   
-  1: Tricorn (Standard, but squares the complex conjugate)
+  1: Tricorn (conjugate(z)^2 + c)
   
-  2: Burning Ship (Standard, but takes the absolute value of a and b)
+  2: Burning Ship ((|a| + |b|i) + c)
   
-  3: A bowl looking thing (Uses the function (a^2 + b) + i(b^2 + a^2 + b) + c)
+  3: A bowl looking thing ((a^2 + b) + i(b^2 + a^2 + b) + c)
   
-  4: Newton's Method style equation ((z - (z^2 + 1) / (2 * z)))
+  4: Newton's Method style equation ((z - (z^2 + 1) / (2 * z)) + c)
   
   5: Using Cosines and Sines (z^3 + c * (sin(z) * cos(z + 1)))
 
