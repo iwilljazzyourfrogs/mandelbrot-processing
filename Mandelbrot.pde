@@ -1,15 +1,26 @@
-int maxIter = 2;
+int maxIter;
+final float[][] defaultPositions = {
+  new float[] {0f, -2.0f / 3.0f, 1.5f}, 
+  new float[] {0f, -1.0f / 3.0f, 1.5f}, 
+  new float[] {-0.45f, -0.55f, 1.5f}, 
+  new float[] {-0.25f, -0.9f, 1.5f}, 
+  new float[] {-0.15f, -0.15f, 1.5f}, 
+  new float[] {0f, 0f, 1.5f}, 
+  new float[] {0f, 0f, 2.0f}, 
+  new float[] {0f, 1.5f, 1.75f}, 
+  new float[] {0f, 0f, 1.0f}
+};
 
-final float originX = -0.45f;
-final float originY = -0.55f;
-final float radius = 1.5f;
+final int choice = 8;
 
-final int choice = 2;
+final float originX = defaultPositions[choice][0];
+final float originY = defaultPositions[choice][1];
+final float radius = defaultPositions[choice][2];
 
 int samples;
 
-boolean rendering = false;
-int res = 1;
+boolean rendering = true;
+int res = 4;
 boolean antiAliasing;
 
 color[] red = {
@@ -140,8 +151,8 @@ float[][] mandelbrot;
 
 void settings() {
   size(512, 512);
+  maxIter = 2;
   antiAliasing = false;
-  println((int)pow(2, (log(res)/log(2)) + 10));
   if (rendering) {
     size((int)pow(2, (log(res)/log(2)) + 10), (int)pow(2, (log(res)/log(2)) + 10));
     antiAliasing = true;
@@ -174,7 +185,7 @@ void setup() {
                          "rainbow", "pastel", "bw",
                          "l", "g", "b", "t"};
   
-  int selection = 22;
+  int selection = 9;
   if (18 < selection && selection < 23) {
     colors = append(reverse(interpolateColors(colorOptions[selection], 100000)), color(0, 0, 0));
   } else {
@@ -188,7 +199,7 @@ void setup() {
       render(colors);
       save("renders/" + choice + "/" + res + "K/" + i + "_" + colorNames[i] + ".png");
     }
-    println(int(millis() / 1000.0f) / 60 + ":" + (millis() / 1000.0f) % 60);
+    println(int(millis() / 1000.0f) / 60 + ":" + int(millis() / 1000.0f) % 60);
     exit();
   }
 }
