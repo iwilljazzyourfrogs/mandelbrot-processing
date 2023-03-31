@@ -1,6 +1,6 @@
 int maxIter;
 final float[][] defaultPositions = {
-  new float[] {0f, -2.0f / 3.0f, 1.5f}, 
+  new float[] {-2.0f / 3.0f,0f, 1.5f}, 
   new float[] {0f, -1.0f / 3.0f, 1.5f}, 
   new float[] {-0.45f, -0.55f, 1.5f}, 
   new float[] {-0.25f, -0.9f, 1.5f}, 
@@ -11,7 +11,7 @@ final float[][] defaultPositions = {
   new float[] {0f, 0f, 1.0f}
 };
 
-final int choice = 8;
+final int choice = 0;
 
 final float originX = defaultPositions[choice][0];
 final float originY = defaultPositions[choice][1];
@@ -20,7 +20,7 @@ final float radius = defaultPositions[choice][2];
 int samples;
 
 boolean rendering = true;
-int res = 4;
+int res = 8;
 boolean antiAliasing;
 
 color[] red = {
