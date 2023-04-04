@@ -11,7 +11,7 @@ final float[][] defaultPositions = {
   new float[] {0f, 0f, 1.0f}
 };
 
-final int choice = 2;
+final int choice = 5;
 
 final float originX = defaultPositions[choice][0];
 final float originY = defaultPositions[choice][1];
